@@ -1,4 +1,4 @@
-import { GitBranch, Rocket, BadgeInfo } from 'lucide-react';
+import { Star, Rocket, BadgeInfo } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -30,8 +30,8 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-indigo-400 transition-colors duration-200 ease-in-out flex items-center"
           >
-            <GitBranch className="size-4 mr-1" />
-            Improve this app
+            <Star className="size-4 mr-1" />
+            Star on GitHub
           </a>
         </div>
       </div>

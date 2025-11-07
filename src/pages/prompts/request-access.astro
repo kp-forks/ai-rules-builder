@@ -2,6 +2,9 @@
 import Layout from '../../layouts/Layout.astro';
 import Topbar from '../../components/Topbar';
 import Footer from '../../components/Footer';
+import PathCard from '../../components/ui/PathCard.astro';
+import { EXTERNAL_LINKS } from '../../data/landingContent';
+import pageBg from '../../assets/prompt-library/request-page-bg.png';
 
 const user = Astro.locals.user;
 ---
@@ -9,35 +12,28 @@ const user = Astro.locals.user;
 <Layout>
   <div class="flex flex-col h-screen max-h-screen bg-gray-950 overflow-hidden">
     <Topbar client:load initialUser={user} />
-    <main class="flex-grow overflow-auto flex items-center justify-center">
-      <div class="max-w-2xl mx-auto px-4 py-16 text-center">
-        <h1 class="text-4xl font-bold text-white mb-4">Access Required</h1>
-        <p class="text-xl text-gray-400 mb-8">
-          You need organization membership to access the Prompts Library.
-        </p>
-        <ul class="list-disc list-inside text-gray-400 mb-8 space-y-1.5">
-          <li>
-            If you want to request access for your organization, please use <a
-              href="https://airtable.com/appBN64leXIbQ1gDe/pagwa0kilsbzLUFBQ/form"
-              target="_blank"
-              class="text-blue-500 underline">this form</a
-            >.
-          </li>
-          <li>
-            If you are member of 10xDevs, please use invite from <a
-              href="https://bravecourses.circle.so/c/lekcje-10x2/sections/681280/lessons/2580641"
-              target="_blank"
-              class="text-blue-500 underline">this lesson</a
-            >.
-          </li>
-        </ul>
+    <main class="flex-grow overflow-auto flex items-center justify-center relative">
+      <!-- Full-size background image -->
+      <img src={pageBg.src} alt="" class="absolute inset-0 w-full h-full object-cover opacity-30" />
 
-        <a
-          href="/"
-          class="inline-block px-6 py-3 bg-indigo-700 text-white rounded-md hover:bg-indigo-600 transition-colors"
-        >
-          Return to 10xRules
-        </a>
+      <div class="max-w-xl mx-auto px-4 py-16 relative z-10">
+        <!-- Prompt Library Path Card -->
+        <PathCard
+          icon="👥"
+          title="Prompt Library"
+          subtitle="Request access for your organization"
+          features={[
+            'Centralized prompt management',
+            'Admin curation tools',
+            'Role-based team access',
+            'Collections & segments',
+            'Publish/draft workflows',
+            'MCP server access',
+          ]}
+          ctaText="Request Access"
+          ctaHref={EXTERNAL_LINKS.LIBRARY_FORM}
+          note="Currently available for selected organizations (pilot program)"
+        />
       </div>
     </main>
     <Footer client:load />

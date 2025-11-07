@@ -1,17 +1,13 @@
-import { FileText, Shield, Menu, Home } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import type { NavigationItem } from '../hooks/useNavigationItems';
 
 interface NavigationDropdownProps {
-  isAdmin: boolean;
-  hasPromptAccess: boolean;
+  items: NavigationItem[];
   currentPath: string;
 }
 
-export default function NavigationDropdown({
-  isAdmin,
-  hasPromptAccess,
-  currentPath,
-}: NavigationDropdownProps) {
+export default function NavigationDropdown({ items, currentPath }: NavigationDropdownProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // Close dropdown when clicking outside
@@ -28,17 +24,7 @@ export default function NavigationDropdown({
   }, []);
 
   // Get current page info for button display
-  const getCurrentPageInfo = () => {
-    if (currentPath.startsWith('/prompts/admin')) {
-      return { icon: Shield, text: 'Prompts Admin' };
-    }
-    if (currentPath === '/prompts') {
-      return { icon: FileText, text: 'Prompts Library' };
-    }
-    return { icon: Home, text: 'Rules Builder' };
-  };
-
-  const currentPage = getCurrentPageInfo();
+  const currentPage = items.find((item) => item.matchPath(currentPath)) || items[0];
   const CurrentIcon = currentPage.icon;
 
   return (
@@ -50,53 +36,38 @@ export default function NavigationDropdown({
         aria-haspopup="true"
       >
         <CurrentIcon className="size-4" />
-        <span className="hidden md:inline">{currentPage.text}</span>
+        <span className="hidden md:inline">{currentPage.label}</span>
         <Menu className="size-3 opacity-70" />
       </button>
 
       {isDropdownOpen && (
         <div className="absolute right-0 mt-2 w-56 bg-gray-800 border border-gray-700 rounded-md shadow-lg py-1 z-20">
-          <a
-            href="/"
-            className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
-              currentPath === '/'
-                ? 'bg-blue-900/30 text-blue-300'
-                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-            }`}
-          >
-            <Home className="size-4" />
-            Rules Builder
-          </a>
+          {items.map((item) => {
+            const ItemIcon = item.icon;
+            const isActive = item.matchPath(currentPath);
 
-          {hasPromptAccess && (
-            <>
+            // Map activeColor to actual Tailwind classes
+            const activeClasses: Record<typeof item.activeColor, string> = {
+              blue: 'bg-blue-900/30 text-blue-300',
+              teal: 'bg-teal-900/30 text-teal-300',
+              purple: 'bg-purple-900/30 text-purple-300',
+            };
+
+            return (
               <a
-                href="/prompts"
+                key={item.href}
+                href={item.href}
                 className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
-                  currentPath === '/prompts'
-                    ? 'bg-teal-900/30 text-teal-300'
+                  isActive
+                    ? activeClasses[item.activeColor]
                     : 'text-gray-300 hover:bg-gray-700 hover:text-white'
                 }`}
               >
-                <FileText className="size-4" />
-                Prompts Library
+                <ItemIcon className="size-4" />
+                {item.label}
               </a>
-
-              {isAdmin && (
-                <a
-                  href="/prompts/admin"
-                  className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
-                    currentPath.startsWith('/prompts/admin')
-                      ? 'bg-purple-900/30 text-purple-300'
-                      : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-                  }`}
-                >
-                  <Shield className="size-4" />
-                  Prompts Admin
-                </a>
-              )}
-            </>
-          )}
+            );
+          })}
         </div>
       )}
     </div>

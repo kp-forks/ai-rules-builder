@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import LoginButton from './auth/LoginButton';
 import NavigationDropdown from './NavigationDropdown';
 import Logo from './ui/Logo';
+import { useNavigationItems } from '../hooks/useNavigationItems';
 
 interface TopbarProps {
   initialUser?: {
@@ -36,19 +37,13 @@ export default function Topbar({ initialUser }: TopbarProps) {
     }
   }, [initialUser, fetchOrganizations]);
 
-  // Check if user is admin
-  const isAdmin = organizations.some((org) => org.role === 'admin');
-  const hasPromptAccess = organizations.length > 0;
+  // Get navigation items based on user permissions
+  const navigationItems = useNavigationItems(organizations);
 
   // Get current path for active state
   const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
 
-  // Count available navigation items
-  const availableNavItems = 1 + (hasPromptAccess ? 1 : 0) + (isAdmin ? 1 : 0);
-  const showNavigation = availableNavItems > 1;
-
-  // Don't show navigation until hydrated and data loaded
-  const shouldShowNavigation = hasHydrated && !isLoading && showNavigation;
+  const shouldShowNavigation = hasHydrated && !isLoading;
 
   return (
     <header className="sticky top-0 z-10 w-full bg-gray-900 border-b border-gray-800 p-3 px-4 md:p-4 md:px-6 shadow-md">
@@ -62,11 +57,7 @@ export default function Topbar({ initialUser }: TopbarProps) {
           {initialUser && (
             <>
               {shouldShowNavigation ? (
-                <NavigationDropdown
-                  isAdmin={isAdmin}
-                  hasPromptAccess={hasPromptAccess}
-                  currentPath={currentPath}
-                />
+                <NavigationDropdown items={navigationItems} currentPath={currentPath} />
               ) : !hasHydrated || isLoading ? (
                 <div className="flex items-center gap-2 px-3 py-2 animate-pulse">
                   <div className="size-4 bg-gray-700 rounded" />
