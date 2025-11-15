@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { usePromptsStore } from '../../store/promptsStore';
 import { Dropdown, type DropdownOption } from '../ui/Dropdown';
+import { DownloadAllButton } from './DownloadAllButton';
 
 export const PromptFilters: React.FC = () => {
   const {
@@ -56,7 +57,10 @@ export const PromptFilters: React.FC = () => {
             <div className="h-[38px] w-[200px] bg-gray-700 rounded" />
           </div>
         </div>
-        <div className="h-5 w-16 bg-gray-700 rounded animate-pulse" />
+        <div className="flex items-center gap-3">
+          <div className="h-[38px] w-32 bg-gray-700 rounded animate-pulse" />
+          <div className="h-5 w-16 bg-gray-700 rounded animate-pulse" />
+        </div>
       </div>
     );
   }
@@ -87,10 +91,13 @@ export const PromptFilters: React.FC = () => {
         )}
       </div>
 
-      <div className="text-sm text-gray-400">
-        <span>
-          {prompts.length} {prompts.length === 1 ? 'prompt' : 'prompts'}
-        </span>
+      <div className="flex items-center gap-3">
+        <DownloadAllButton />
+        <div className="text-sm text-gray-400">
+          <span>
+            {prompts.length} {prompts.length === 1 ? 'prompt' : 'prompts'}
+          </span>
+        </div>
       </div>
     </div>
   );
